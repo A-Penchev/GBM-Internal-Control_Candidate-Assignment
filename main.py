@@ -1,6 +1,7 @@
-import requests
-import pandas as pd
-import os
+# Import necessary libraries
+import requests  # For making HTTP requests
+import pandas as pd  # For data manipulation
+import os  # For interacting with the operating system
 
 # Define a list of URLs for the JSON files
 urls = [
@@ -13,6 +14,7 @@ urls = [
     # Add more URLs here for additional JSON files
 ]
 
+# Function to fetch data from a URL and return it as a DataFrame
 def fetch_dataframe(url):
     try:
         response = requests.get(url)
@@ -39,6 +41,8 @@ merged_df = pd.concat(dataframes, ignore_index=True)
 def merge_columns(merged_df, column_suffix, new_column_name):
         columns_to_merge = [col for col in merged_df.columns if col.endswith(column_suffix)]
         merged_df[new_column_name] = merged_df[columns_to_merge].apply(lambda row: ''.join(row.dropna().astype(str)), axis=1)
+
+# Function to drop unwanted columns
 def drop_columns(merged_df, column_suffix):
     columns_to_drop = [col for col in merged_df.columns if col.endswith(column_suffix)]
     merged_df.drop(columns=columns_to_drop, inplace=True)
@@ -81,7 +85,7 @@ def drop_columns(merged_df, column_suffix):
     columns_to_drop = [col for col in merged_df.columns if col.endswith(column_suffix)]
     merged_df.drop(columns=columns_to_drop, inplace=True)
 
-# Add drop_columns calls for columns to be dropped
+# Drop columns that were not created by merging and/or are duplicates of other columns
 drop_columns(merged_df, "_ISIN")
 drop_columns(merged_df, "_ALLOTMENT_RATIO")
 drop_columns(merged_df, "_ALLOTMENT_YIELD")
@@ -126,10 +130,6 @@ drop_columns(merged_df, "_AMOUNT_REPURCHASED")
 drop_columns(merged_df, "_TOTAL_AMOUNT_REPURCHASED")
 drop_columns(merged_df, "_CUTOFF_YIELD")
 drop_columns(merged_df, "_MAX_TOTAL_PURCHASE")
-
-# Drop columns that were not created by merging
-columns_to_drop = [col for col in merged_df.columns if col not in merged_df.columns[:original_column_count]]
-merged_df.drop(columns=columns_to_drop, inplace=True)
 
 # Remove duplicate columns
 merged_df = merged_df.loc[:, ~merged_df.columns.duplicated()]
