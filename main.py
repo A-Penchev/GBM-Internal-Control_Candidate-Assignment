@@ -77,14 +77,6 @@ merge_columns(merged_df, "_BOC_PURCHASE", "BOC PURCHASE")
 merge_columns(merged_df, "_TOTAL_SUBMITTED", "TOTAL AMOUNT SUBMITTED by GSD")
 merge_columns(merged_df, "_NON_COMPETE_AMOUNT", "TOTAL NON COMPETE SUBMITTED by GSP")
 
-# Track the original column count
-original_column_count = len(merged_df.columns)
-
-# Drop unwanted columns
-def drop_columns(merged_df, column_suffix):
-    columns_to_drop = [col for col in merged_df.columns if col.endswith(column_suffix)]
-    merged_df.drop(columns=columns_to_drop, inplace=True)
-
 # Drop columns that were not created by merging and/or are duplicates of other columns
 drop_columns(merged_df, "_ISIN")
 drop_columns(merged_df, "_ALLOTMENT_RATIO")
